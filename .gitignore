@@ -1,0 +1,19 @@
+# SQLite & Environment
+db.sqlite3
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Django / IDE
+*.log
+local_settings.py
+.vscode/
+.idea/

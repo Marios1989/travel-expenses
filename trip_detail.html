@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ trip.title }} - Λεπτομέρειες</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5 mb-5">
+        <a href="{% url 'trips:trip_list' %}" class="btn btn-outline-secondary mb-3">&larr; Πίσω στη λίστα</a>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h3>{{ trip.code }} - {{ trip.title }}</h3>
+                <p class="text-muted">Έργο: {{ trip.project.name }} | Ταξιδιώτης: {{ trip.traveler.username }}</p>
+                <hr>
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <h5>Συνολικό Δηλωμένο</h5>
+                        <p class="fs-4 text-primary">{{ total_declared }} €</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Εγκεκριμένο Κόστος</h5>
+                        <p class="fs-4 text-success">{{ total_approved }} €</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Προκαταβολές</h5>
+                        <p class="fs-4 text-warning">{{ total_advances }} €</p>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Υπόλοιπο (Ισοζύγιο)</h5>
+                        <p class="fs-4 fw-bold {% if balance >= 0 %}text-danger{% else %}text-success{% endif %}">
+                            {{ balance }} €
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Κουμπιά Ενεργειών -->
+        <div class="mb-4">
+            <a href="{% url 'trips:add_expense' trip.pk %}" class="btn btn-success">+ Προσθήκη Εξόδου</a>
+            <a href="{% url 'trips:add_advance' trip.pk %}" class="btn btn-warning text-dark">+ Προσθήκη Προκαταβολής</a>
+        </div>
+
+        <!-- Λίστα Εξόδων Ταξιδιού -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">📋 Καταχωρημένα Έξοδα</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Κατηγορία</th>
+                            <th>Ημερομηνία</th>
+                            <th>Ποσό</th>
+                            <th>Περιγραφή</th>
+                            <th>Κατάσταση</th>
+                            <th class="text-end">Ενέργειες</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in trip.expenses.all %}
+                        <tr>
+                            <td>{{ expense.category }}</td>
+                            <td>{{ expense.date }}</td>
+                            <td>{{ expense.amount_in_currency }} {{ expense.currency }}</td>
+                            <td>{{ expense.description }}</td>
+                            <td>
+                        {% if expense.status == 'APPROVED' %}
+                            <span class="badge bg-success">Εγκρίθηκε</span>
+                        {% elif expense.status == 'REJECTED' %}
+                            <span class="badge bg-danger">Απορρίφθηκε</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Σε εκκρεμότητα</span>
+                        {% endif %}
+                    </td>
+                            <td class="text-end">
+                                <a href="{% url 'trips:expense_approve' expense.pk %}" class="btn btn-sm btn-success" title="Έγκριση">✓</a>
+                        <a href="{% url 'trips:expense_reject' expense.pk %}" class="btn btn-sm btn-danger" title="Απόρριψη">✕</a>
+            <a href="{% url 'trips:expense_edit' expense.pk %}" class="btn btn-sm btn-outline-primary">✏️</a>
+            <a href="{% url 'trips:expense_delete' expense.pk %}" class="btn btn-sm btn-outline-danger">🗑️</a>
+        </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">Δεν υπάρχουν καταχωρημένα έξοδα για αυτό το ταξίδι.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Λίστα Προκαταβολών Ταξιδιού -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">💶 Καταχωρημένες Προκαταβολές</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ημερομηνία</th>
+                            <th>Ποσό</th>
+                            <th>Αναφορά (Reference)</th>
+                            <th class="text-end">Ενέργειες</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for advance in trip.advances.all %}
+                        <tr>
+                            <td>{{ advance.date }}</td>
+                            <td>{{ advance.amount }} €</td>
+                            <td>{{ advance.reference }}</td>
+                            <td class="text-end">
+            <a href="{% url 'trips:advance_edit' advance.pk %}" class="btn btn-sm btn-outline-primary">✏️</a>
+            <a href="{% url 'trips:advance_delete' advance.pk %}" class="btn btn-sm btn-outline-danger">🗑️</a>
+        </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">Δεν υπάρχουν καταχωρημένες προκαταβολές.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
