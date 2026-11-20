@@ -24,6 +24,10 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",") if os.environ.get("ALLOWED_HOSTS") else ["localhost", "127.0.0.1"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://travel-expenses-4bgp.onrender.com",
+]
+
 if os.environ.get("POSTGRES_DB"):
     DATABASES = {
         "default": {
