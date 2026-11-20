@@ -56,9 +56,7 @@ def add_expense(request, trip_pk):
     """Προσθήκη νέου εξόδου σε συγκεκριμένο ταξίδι"""
     trip = _get_accessible_trip(request.user, trip_pk)
 
-    if request.method == 'POST':
-        form = ExpenseForm(request.POST)
-        if form.is_valid():
+ if form.is_valid():
             expense = form.save(commit=False)
             expense.trip = trip
             if trip.start_date and trip.end_date and not (trip.start_date <= expense.date <= trip.end_date):
@@ -67,8 +65,11 @@ def add_expense(request, trip_pk):
                     f"Η ημερομηνία εξόδου πρέπει να είναι μεταξύ {trip.start_date} και {trip.end_date}."
                 )
             else:
-                expense.save()
-                return redirect('trips:trip_detail', pk=trip.pk)
+                try:
+                    expense.save()
+                    return redirect('trips:trip_detail', pk=trip.pk)
+                except Exception as exc:
+                    form.add_error(None, f"Σφάλμα κατά την αποθήκευση: {exc}")
     else:
         form = ExpenseForm()
 
