@@ -52,4 +52,4 @@ class TripForm(forms.ModelForm):
             'traveler': forms.Select(attrs={'class': 'form-select'}),
             'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-              }
+      }
