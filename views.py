@@ -61,8 +61,14 @@ def add_expense(request, trip_pk):
         if form.is_valid():
             expense = form.save(commit=False)
             expense.trip = trip
-            expense.save()
-            return redirect('trips:trip_detail', pk=trip.pk)
+            if trip.start_date and trip.end_date and not (trip.start_date <= expense.date <= trip.end_date):
+                form.add_error(
+                    'date',
+                    f"Η ημερομηνία εξόδου πρέπει να είναι μεταξύ {trip.start_date} και {trip.end_date}."
+                )
+            else:
+                expense.save()
+                return redirect('trips:trip_detail', pk=trip.pk)
     else:
         form = ExpenseForm()
 
