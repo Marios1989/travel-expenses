@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import User, Project, Category, AuditLog, Trip, Expense, AdvancePayment, Settlement
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.hashers import identify_hasher
-from .models import User  # ή from models import User αν το models.py είναι στη ρίζα
+from models import User  # ή from models import User αν το models.py είναι στη ρίζα
 
 
 @admin.register(User)
