@@ -1,8 +1,16 @@
 from django.contrib import admin
-from .models import User, Project, Category, AuditLog, Trip, Expense, AdvancePayment, Settlement
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.hashers import identify_hasher
-from models import User  # ή from models import User αν το models.py είναι στη ρίζα
+from models import (
+    AdvancePayment,
+    AuditLog,
+    Category,
+    Expense,
+    Project,
+    Settlement,
+    Trip,
+    User,
+)
 
 
 @admin.register(User)
@@ -23,7 +31,7 @@ class UserAdmin(BaseUserAdmin):
                 obj.set_password(obj.password)
         super().save_model(request, obj, form, change)
 
-admin.site.register(User)
+
 admin.site.register(Project)
 admin.site.register(Category)
 admin.site.register(AuditLog)
