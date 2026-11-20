@@ -1,0 +1,6 @@
+{% if user.is_authenticated %}
+  <form method="post" action="{% url 'logout' %}" class="d-inline">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-outline-secondary btn-sm">Αποσύνδεση</button>
+  </form>
+{% endif %}
