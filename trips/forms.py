@@ -44,10 +44,12 @@ class AdvancePaymentForm(forms.ModelForm):
 class TripForm(forms.ModelForm):
     class Meta:
         model = Trip
-        fields = ['code', 'title', 'project', 'traveler']
+        fields = ['code', 'title', 'project', 'traveler', 'start_date', 'end_date']
         widgets = {
             'code': forms.TextInput(attrs={'class': 'form-control'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'project': forms.Select(attrs={'class': 'form-select'}),
             'traveler': forms.Select(attrs={'class': 'form-select'}),
+            'start_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
